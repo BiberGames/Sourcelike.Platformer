@@ -4,151 +4,95 @@ function Start()
     CLGameObject.SetActive("BLOOM", false)
     CLGameObject.SetActive("DebugScreen", false)
     Sky()
-    Utils.DelayedLauncher("GenerateTilemap", 2)
+    CreateObject("Tree", -5, 10, 1)
+    CreateObject("Grass 1", -2, 8.5, -1)
+    CreateObject("Grass 2", -1, 8.5, -1)
+    CreateObject("Grass 3", 0, 8.5, -1)
+    CreateObject("Grass 4", 2, 8.5, -1)
+    CreateObject("Grass 5", 4, 8.5, -1)
     Utils.DelayedLauncher("SpawnPlayer", 2)
 end
 
-function SpawnPlayer()
-    CL2D.SetSprite("2DPlayer", 10)
-    CLTransform.Position("2DCamera", 0, 4, 0, 0)
-    CLTransform.Position("Sky", 640, 350, 50, 0)
-    CL2D.SetSprite("Sky", 3)
-
-    CL2D.SetCColliderSize("2DPlayer", 1, 1)
-
-    CLTransform.Position("2DPlayer", 10, -8, 0, 0)
-
-    CreateQBlock("QBlockSpawn1", 16, -6)
-    CreateQBlock("QBlockSpawn2", 20, -6)
-    CreateQBlock("QBlockSpawn3", 22, -6)
-    CreateQBlock("QBlockSpawn3,1", 22, -2)
-    CreateQBlock("QBlockSpawn4", 24, -6)
-
-    CLGameObject.SetActive("LoadingBackground", false)
-end
-
-function LoadSprites()
-    CL2D.LoadSprite("Addons/Platformer/Textures/World/BrickFloor.png", 0, 16, true)
-    CL2D.LoadSprite("Addons/Platformer/Textures/World/Brick.png", 1, 16, true)
-    CL2D.LoadSprite("Addons/Platformer/Textures/World/Brick2.png", 2, 16, true)
-    CL2D.LoadSprite("Addons/Platformer/Textures/Sky.png", 3, 1, true)
-
-    CL2D.LoadSprite("Addons/Platformer/Textures/World/QBlock1.png", 5, 16, true)
-    CL2D.LoadSprite("Addons/Platformer/Textures/World/QBlock2.png", 6, 16, true)
-    CL2D.LoadSprite("Addons/Platformer/Textures/World/QBlock3.png", 7, 16, true)
-    CL2D.LoadSprite("Addons/Platformer/Textures/World/QBlock4.png", 8, 16, true)
-
-    CL2D.LoadSprite("Addons/Platformer/Textures/Player/Player_Small_Idle.png", 10, 16, true)
-    CL2D.LoadSprite("Addons/Platformer/Textures/Player/Player_Small_Jump.png", 11, 16, true)
-
-    CL2D.LoadSprite("Addons/Platformer/Textures/Player/Player_Small_Walk1.png", 12, 16, true)
-    CL2D.LoadSprite("Addons/Platformer/Textures/Player/Player_Small_Walk2.png", 13, 16, true)
-    CL2D.LoadSprite("Addons/Platformer/Textures/Player/Player_Small_Walk3.png", 14, 16, true)
-
-    CL2D.LoadSprite("Addons/Platformer/Textures/World/PL.png", 1023, 16, true)
-end
-
-function SayHi()
-    CLConsole.Log("Hi!")
-end
-
-function CreateQBlock(Name, PosX, PosY)
-    CLGameObject.CreateEmpty(Name)
-    CLGameObject.AddComponent(Name, "2D.Sprite")
-    CLGameObject.AddComponent(Name, "Physics.BoxCollider2D");
-    CL2D.SetBColliderSize(Name, 1, 1)
-    CL2D.SetSprite(Name, 5)
-    CLTransform.Position(Name, PosX, PosY, 0, 0)
-end
-
-QAnimationFrame = 5
-QTimer = 0
-function QBlockAnimation(Names)
-
-    if CLTime.GetTime() > QTimer then
-        QTimer = CLTime.GetTime() + 0.3
-        QAnimationFrame = QAnimationFrame + 1
-
-        if QAnimationFrame == 8 then
-            QAnimationFrame = 5
-        end
-
-        for i = 1, #Names do
-            CL2D.SetSprite(Names[i], QAnimationFrame)
-        end
-    end
-end
-
-PWAnimationFrame = 12
-PWTimer = 0
-function PlayerWalkAnimation()
-
-    if CLTime.GetTime() > PWTimer then
-        PWTimer = CLTime.GetTime() + 0.2
-        PWAnimationFrame = PWAnimationFrame + 1
-
-        if PWAnimationFrame == 15 then
-            PWAnimationFrame = 12
-        end
-
-        CL2D.SetSprite("2DPlayer", PWAnimationFrame)
-    end
-end
-
-function PlayerAnimation()
-    if not CL2D.PlayerGrounded() then
-        CL2D.SetSprite("2DPlayer", 11)
-    elseif CLInput.GetAxis("Horizontal") < -0.1 or CLInput.GetAxis("Horizontal") > 0.1 then
-        PlayerWalkAnimation()
-    else
-        CL2D.SetSprite("2DPlayer", 10)
-    end
-end
-
-QBlock = {"QBlockSpawn1", "QBlockSpawn2", "QBlockSpawn3", "QBlockSpawn3,1", "QBlockSpawn4"}
-
-function Loop()
-    QBlockAnimation(QBlock)
-    PlayerAnimation()
+function CreateIsland()
+    CLGameObject.CreateEmpty("Island")
+    CLGameObject.AddComponent("Island", "2D.Sprite")
+    CLGameObject.AddComponent("Island", "Physics.BoxCollider2D");
+    CL2D.SetBColliderSize("Island", 14, 10)
+    CL2D.SetColliderOffset("Island", -0.8, 3)
+    CL2D.SetSprite("Island", 0)
+    CLTransform.Position("Island", 0, 0, 0, 0)
 end
 
 function Sky()
     CLGameObject.CreateEmpty("Sky")
+    CLTransform.Position("Sky", 0, 0, 100, 0)
     CLGameObject.AddComponent("Sky", "2D.Sprite")
 end
 
-function UpdateTile(Name)
-    CLGameObject.AddComponent(Name, "2D.Sprite")
-    CLGameObject.AddComponent(Name, "Physics.BoxCollider2D");
-    CL2D.SetBColliderSize(Name, 1, 1)
+function LoadSprites()
+    CL2D.LoadSprite("Addons/Platformer/Textures/World/Island.png", 0, 8, true)
+    CL2D.LoadSprite("Addons/Platformer/Textures/World/Grass_01.png", 1, 16, true)
+    CL2D.LoadSprite("Addons/Platformer/Textures/World/Grass_02.png", 2, 16, true)
+    CL2D.LoadSprite("Addons/Platformer/Textures/World/Grass_03.png", 3, 16, true)
+    CL2D.LoadSprite("Addons/Platformer/Textures/World/Grass_04.png", 4, 16, true)
+    CL2D.LoadSprite("Addons/Platformer/Textures/World/Tree_01.png", 5, 16, true)
+    CL2D.LoadSprite("Addons/Platformer/Textures/Sky.png", 6, 16, true)
+    CL2D.LoadSprite("Addons/Platformer/Textures/Player/Player_01.png", 7, 16, true)
+    CL2D.LoadSprite("Addons/Platformer/Textures/Player/Player_02.png", 8, 16, true)
+    CL2D.LoadSprite("Addons/Platformer/Textures/Player/Player_03.png", 9, 16, true)
+    CL2D.LoadSprite("Addons/Platformer/Textures/Player/Player_04.png", 10, 16, true)
 end
 
-function GenerateTilemap()
-    WorldRaw = CLIO.LoadFileRaw("Addons/Platformer/Maps/1-1.txt")
-    World = Utils.SplitString(WorldRaw, ",")
-    Index = 0
-    
-    for X = 1, 12, 1 do 
-        for Y = 1, 210, 1 do 
+function CreateObject(Name, X, Y, Z)
+    CLGameObject.CreateEmpty(Name)
+    CLTransform.Position(Name, X, Y, Z, 0)
+    CLGameObject.AddComponent(Name, "2D.Sprite")
+end
 
-            if World[Index] == "a" then
-                CLConsole.Log("Nothing!")
+function SpawnPlayer()
+    CL2D.SetCColliderSize("2DPlayer", 1, 1)
+    CreateIsland()
+    CL2D.SetSprite("Sky", 6)
+    CL2D.SetSprite("Tree", 5)
+    CLTransform.Position("2DPlayer", 0, 10, 0, 0)
+    CLCamera.SetSize("2DCamera", 5)
+    CLGameObject.SetActive("LoadingBackground", false)
+end
 
-            elseif World[Index] == "b" then
-                CLGameObject.CreateEmpty("Tile" .. Index)
-                UpdateTile("Tile" .. Index)
-                CLTransform.Position("Tile" .. Index, Y, -X, 0, 0)
-                CL2D.SetSprite("Tile" .. Index, 0)
+PlayerAnimationFrame = 7
+PlayerTimer = 0
+function PlayerAnimation()
+    if CLTime.GetTime() > PlayerTimer then
+        PlayerTimer = CLTime.GetTime() + 0.3
+        PlayerAnimationFrame = PlayerAnimationFrame + 1
 
-            elseif World[Index] == "c" then
-                CLGameObject.CreateEmpty("Tile" .. Index)
-                UpdateTile("Tile" .. Index)
-                CLTransform.Position("Tile" .. Index, Y, -X, 0, 0)
-                CL2D.SetSprite("Tile" .. Index, 1)
-            end
+        if PlayerAnimationFrame == 11 then
+            PlayerAnimationFrame = 7
+        end
 
-            Index = Index + 1
+        CL2D.SetSprite("2DPlayer", PlayerAnimationFrame)
+    end
+end
+
+
+GAnimationFrame = 4
+GTimer = 0
+function GrassAnimation(Names)
+    if CLTime.GetTime() > GTimer then
+        GTimer = CLTime.GetTime() + 0.3
+        GAnimationFrame = GAnimationFrame + 1
+
+        if GAnimationFrame == 5 then
+            GAnimationFrame = 1
+        end
+
+        for i = 1, #Names do
+            CL2D.SetSprite(Names[i], GAnimationFrame)
         end
     end
-    CLConsole.Clear()
+end
+
+function Loop()
+    GrassAnimation({"Grass 1", "Grass 2", "Grass 3", "Grass 4", "Grass 5"})
+    PlayerAnimation()
 end
