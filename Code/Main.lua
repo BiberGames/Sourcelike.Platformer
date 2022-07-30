@@ -4,23 +4,47 @@ function Start()
     CLGameObject.SetActive("BLOOM", false)
     CLGameObject.SetActive("DebugScreen", false)
     Sky()
-    CreateObject("Tree", -5, 10, 1)
-    CreateObject("Grass 1", -2, 8.5, -1)
-    CreateObject("Grass 2", -1, 8.5, -1)
-    CreateObject("Grass 3", 0, 8.5, -1)
-    CreateObject("Grass 4", 2, 8.5, -1)
-    CreateObject("Grass 5", 4, 8.5, -1)
+    CreateObject("Tree", -5, 9.54, 1)
+    CreateObject("Grass 1", -2, 8.33, -1)
+    CreateObject("Grass 2", -1, 8.3, -1)
+    CreateObject("Grass 3", 0, 8.4, -1)
+    CreateObject("Grass 4", 2, 8.32, -1)
+    CreateObject("Grass 5", 4, 8, -1)
     Utils.DelayedLauncher("SpawnPlayer", 2)
+end
+
+function include()
+    CLConsole.Log(CLIO.LoadFileRaw("Addons/Platformer/Code/Autorun.lua"))
+    --local myModule = require(CLIO.GetStreamingAssetsPath() .. "/Addons/Platformer/Code/Autorun")
+
+    local myModule = dofile(CLIO.GetStreamingAssetsPath() .. "/Addons/Platformer/Code/Autorun")
+    myModule.Test("hallo!!!!!!!")
+end
+
+function CreateTestText()
+    CLUI.CeateText("TestText1", 10, "MainCanvas", '<color="red"><align="center">This is a test!</align>', 0, "", "")
+    CLTransform.Position("TestText1", 100, 0, 0, 0)
 end
 
 function CreateIsland()
     CLGameObject.CreateEmpty("Island")
     CLGameObject.AddComponent("Island", "2D.Sprite")
-    CLGameObject.AddComponent("Island", "Physics.BoxCollider2D");
-    CL2D.SetBColliderSize("Island", 14, 10)
+    CLGameObject.AddComponent("Island", "Physics.BoxCollider2D")
+    CL2D.SetBoxColliderSize("Island", 14, 10)
     CL2D.SetColliderOffset("Island", -0.8, 3)
     CL2D.SetSprite("Island", 0)
     CLTransform.Position("Island", 0, 0, 0, 0)
+end
+
+function CreateFootball()
+    CLGameObject.CreateEmpty("Football")
+    CLGameObject.AddComponent("Football", "2D.Sprite")
+    CLGameObject.AddComponent("Football", "Physics.CircleCollider2D")
+    CLGameObject.AddComponent("Football", "Physics.Rigidbody2D")
+    CL2D.SetCircleColliderSize("Football", 0.5)
+    CL2D.SetColliderOffset("Football", 0, 0)
+    CL2D.SetSprite("Football", 11)
+    CLTransform.Position("Football", -3, 15, 0, 0)
 end
 
 function Sky()
@@ -41,6 +65,7 @@ function LoadSprites()
     CL2D.LoadSprite("Addons/Platformer/Textures/Player/Player_02.png", 8, 16, true)
     CL2D.LoadSprite("Addons/Platformer/Textures/Player/Player_03.png", 9, 16, true)
     CL2D.LoadSprite("Addons/Platformer/Textures/Player/Player_04.png", 10, 16, true)
+    CL2D.LoadSprite("Addons/Platformer/Textures/Football.png", 11, 16, true)
 end
 
 function CreateObject(Name, X, Y, Z)
@@ -50,7 +75,8 @@ function CreateObject(Name, X, Y, Z)
 end
 
 function SpawnPlayer()
-    CL2D.SetCColliderSize("2DPlayer", 1, 1)
+    CL2D.SetCapsuleColliderSize("2DPlayer", 1, 1)
+    CreateFootball()
     CreateIsland()
     CL2D.SetSprite("Sky", 6)
     CL2D.SetSprite("Tree", 5)
@@ -95,4 +121,9 @@ end
 function Loop()
     GrassAnimation({"Grass 1", "Grass 2", "Grass 3", "Grass 4", "Grass 5"})
     PlayerAnimation()
+
+    BallPosition = CLTransform.GetPosition("Football")
+    if BallPosition[2] < 6 then
+        CLTransform.Position("Football", -3, 15, 0, 0)
+    end
 end

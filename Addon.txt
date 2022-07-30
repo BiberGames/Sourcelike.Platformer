@@ -1,5 +1,5 @@
 Platformer
 BenjaGames
 VoidMap
-MiniGame
+GameMode
 2D

@@ -1,5 +1,9 @@
-function Start()
-    CLMap.CreateSun("Sun", 255, 255, 255, 1, 0.64)
-    CLTransform.Rotation("Sun")
-    CLConsole.Log("Autorun script executed...")
+local TestFunc = {}
+
+function TestFunc.Test(string)
+    CLConsole.Log(string)
 end
+
+TestFunc.Test = Test
+
+return TestFunc
